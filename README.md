@@ -1,2 +1,2 @@
 # AndroidClassApp
-My android class' app :-)
+My android class' assignment :-)
