@@ -29,6 +29,7 @@ public class BookListMainActivity extends AppCompatActivity {
     private ListView listViewBook;
     private ArrayList<Book> theBooks;
     private GoodsArrayAdapter theAdapter;
+    private FileDataSource fileDataSource;
 
     public static final int CONTEXT_MENU_ITEM_NEW = 1;
     public static final int CONTEXT_MENU_ITEM_DELETE = 2;
@@ -42,10 +43,11 @@ public class BookListMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list_main);
 
-        listViewBook = (ListView)findViewById(R.id.list_view_books);
+
 
         Init();
 
+        listViewBook = (ListView)findViewById(R.id.list_view_books);
         theAdapter = new GoodsArrayAdapter(this,R.layout.list_book,theBooks);
         listViewBook.setAdapter(theAdapter);
 
@@ -117,7 +119,7 @@ public class BookListMainActivity extends AppCompatActivity {
                 menuinfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 //修改数据,删除视图控件
                 final int itemPosition = menuinfo.position;
-                Boolean deleteOrNot = false;
+                    Boolean deleteOrNot = false;
 
                 new AlertDialog.Builder(this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -162,12 +164,19 @@ public class BookListMainActivity extends AppCompatActivity {
     }
 
     private void Init() {
-        theBooks = new ArrayList<Book>();
-        theBooks.add(new Book("软件项目管理案例教程（第4版）", R.drawable.book_2));
-        theBooks.add(new Book ("创新工程实践", R.drawable.book_no_name));
-        theBooks.add(new Book("信息安全数学基础（第2版）", R.drawable.book_1));
+        fileDataSource = new FileDataSource(this);
+        theBooks = fileDataSource.load();
+
+        if(theBooks.size() == 0) {
+            theBooks.add(new Book("no book for now", R.drawable.book_1));
+        }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        fileDataSource.save();
+    }
 
     protected class GoodsArrayAdapter extends ArrayAdapter<Book> {
 

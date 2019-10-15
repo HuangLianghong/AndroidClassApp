@@ -21,7 +21,7 @@ public class GoodEditActivity extends AppCompatActivity {
         editPosition = getIntent().getIntExtra("edit_position",0);
 
         editTextGoodName = (EditText)findViewById(R.id.edit_text_good_name);
-        editTextGoodPrice = (EditText)findViewById(R.id.edit_text_good_price);
+
         buttonCancel = (Button)findViewById(R.id.button_cancel);
         buttonOk = (Button)findViewById(R.id.button_ok);
 
