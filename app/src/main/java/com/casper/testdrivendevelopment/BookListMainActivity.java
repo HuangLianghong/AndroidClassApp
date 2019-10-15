@@ -67,6 +67,11 @@ public class BookListMainActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        fileDataSource.save();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -172,11 +177,6 @@ public class BookListMainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        fileDataSource.save();
-    }
 
     protected class GoodsArrayAdapter extends ArrayAdapter<Book> {
 
