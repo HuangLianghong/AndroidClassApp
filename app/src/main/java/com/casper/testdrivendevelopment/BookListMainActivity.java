@@ -109,7 +109,7 @@ public class BookListMainActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case CONTEXT_MENU_ITEM_NEW:{
                 AdapterView.AdapterContextMenuInfo menuinfo = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-                Intent intent = new Intent(BookListMainActivity.this,GoodEditActivity.class);
+                Intent intent = new Intent(BookListMainActivity.this,EditBookActivity.class);
                 intent.putExtra("edit_position",menuinfo.position);
                 startActivityForResult(intent, REQUEST_CODE_NEW_GOOD);
                 break;
@@ -149,7 +149,7 @@ public class BookListMainActivity extends AppCompatActivity {
 
                 Book book=theBooks.get(menuinfo.position);
 
-                Intent intent = new Intent(BookListMainActivity.this,GoodEditActivity.class);
+                Intent intent = new Intent(BookListMainActivity.this,EditBookActivity.class);
                 intent.putExtra("edit_position",menuinfo.position);
                 intent.putExtra("good_name",book.getTitle());
                 startActivityForResult(intent, REQUEST_CODE_UPDATE_GOOD);

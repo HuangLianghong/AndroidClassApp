@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class GoodEditActivity extends AppCompatActivity {
+public class EditBookActivity extends AppCompatActivity {
 
     private EditText editTextGoodName,editTextGoodPrice;
     private Button buttonOk,buttonCancel;
@@ -16,7 +16,7 @@ public class GoodEditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_good_edit);
+        setContentView(R.layout.activity_book_edit);
 
         editPosition = getIntent().getIntExtra("edit_position",0);
 
@@ -41,13 +41,13 @@ public class GoodEditActivity extends AppCompatActivity {
                 intent.putExtra("good_name", editTextGoodName.getText().toString().trim());
                // intent.putExtra("good_price",Double.parseDouble( editTextGoodPrice.getText().toString()));
                 setResult(RESULT_OK, intent);
-                GoodEditActivity.this.finish();
+                EditBookActivity.this.finish();
             }
         });
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GoodEditActivity.this.finish();
+                EditBookActivity.this.finish();
             }
         });
 
