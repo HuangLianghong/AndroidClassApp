@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,10 +26,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-//haha
+
 public class BookListMainActivity extends AppCompatActivity {
 
-    private ListView listViewBook;
+
     private ArrayList<Book> theBooks;
     private GoodsArrayAdapter theAdapter;
     private FileDataSource fileDataSource;
@@ -43,20 +46,36 @@ public class BookListMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list_main);
 
-
-
         Init();
+       theAdapter=new GoodsArrayAdapter(this,R.layout.list_book,theBooks);
 
-        listViewBook = (ListView)findViewById(R.id.list_view_books);
+        BookFragmentAdapter myPageAdapter = new  BookFragmentAdapter(getSupportFragmentManager());
+
+        ArrayList<Fragment> datas = new ArrayList<Fragment>();
+        datas.add(new BookListFragment(theAdapter));
+       datas.add(new WebFragment());
+        myPageAdapter.setData(datas);
+
+        ArrayList<String> titles = new ArrayList<String>();
+        titles.add("商品");
+        titles.add("新闻");
+        myPageAdapter.setTitles(titles);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+
+        viewPager.setAdapter(myPageAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+/*
+
         theAdapter = new GoodsArrayAdapter(this,R.layout.list_book,theBooks);
-        listViewBook.setAdapter(theAdapter);
 
-        this.registerForContextMenu(listViewBook);
+        */
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v==listViewBook){
+        if(v==findViewById(R.id.list_view_books)){
             int itemPosition= ((AdapterView.AdapterContextMenuInfo) menuInfo).position;
             menu.setHeaderTitle(theBooks.get(itemPosition).getTitle());//场景菜单标题
             menu.add(0, CONTEXT_MENU_ITEM_NEW, 0, "New");
@@ -173,40 +192,35 @@ public class BookListMainActivity extends AppCompatActivity {
         theBooks = fileDataSource.load();
 
         if(theBooks.size() == 0) {
-            theBooks.add(new Book("no book for now", R.drawable.book_1));
+            theBooks.add(new Book("no book for now", R.drawable.book_2));
         }
     }
 
 
-    protected class GoodsArrayAdapter extends ArrayAdapter<Book> {
-
-        private int resourceId;
+    protected class GoodsArrayAdapter extends ArrayAdapter<Book>
+    {
+        private  int resourceId;
         public GoodsArrayAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Book> objects) {
             super(context, resource, objects);
-            resourceId = resource;
+            resourceId=resource;
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            //渲染器生成视图
-            LayoutInflater mInflater = LayoutInflater.from(this.getContext());
+            LayoutInflater mInflater= LayoutInflater.from(this.getContext());
             View item = mInflater.inflate(this.resourceId,null);
 
             ImageView img = (ImageView)item.findViewById(R.id.image_view_book_cover);
             TextView name = (TextView)item.findViewById(R.id.text_view_book_title);
 
 
-            //将商品信息放入对象中
-            Book good_item=this.getItem(position);
+            Book good_item= this.getItem(position);
             img.setImageResource(good_item.getCoverResourceId());
             name.setText(good_item.getTitle());
 
+
             return item;
         }
-    }
-
-    public List<Book> getListBooks(){
-        return theBooks;
     }
 }
