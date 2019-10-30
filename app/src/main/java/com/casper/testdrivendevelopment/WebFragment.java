@@ -37,7 +37,7 @@ public class WebFragment extends Fragment {
         //适应HTML5
         webView.getSettings().setDomStorageEnabled(true);
         //加载URL
-        webView.loadUrl("http://www.bilibili.com/");
+        webView.loadUrl("http://www.baidu.com/");
 
 
         return view;
