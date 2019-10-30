@@ -6,6 +6,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:name="MapApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -17,6 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditBookActivity"></activity>
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="Ulq9GGT5q9NGD6EffONgfncv5kGpMAwG" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
