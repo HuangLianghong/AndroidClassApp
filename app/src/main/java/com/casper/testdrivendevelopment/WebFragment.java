@@ -35,9 +35,9 @@ public class WebFragment extends Fragment {
         //一般允许JavaScript
         webView.getSettings().setJavaScriptEnabled(true);
         //适应HTML5
-        webView.getSettings().setDomStorageEnabled(true);
+       // webView.getSettings().setDomStorageEnabled(true);
         //加载URL
-        webView.loadUrl("http://www.baidu.com/");
+        webView.loadUrl("https://news.sina.com.cn/");
 
 
         return view;
