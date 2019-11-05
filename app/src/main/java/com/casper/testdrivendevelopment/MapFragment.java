@@ -2,6 +2,8 @@ package com.casper.testdrivendevelopment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,8 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.casper.testdrivendevelopment.data.ShopLoader;
+import com.casper.testdrivendevelopment.data.model.Shop;
 
 
 /**
@@ -66,11 +70,11 @@ public class MapFragment extends Fragment {
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_action_name);
         //准备 marker option 添加 marker 使用
         MarkerOptions markerOptions = new MarkerOptions().icon(bitmap).position(latLng);
-        //获取添加的 marker 这样便于后续的操作
+
         Marker marker = (Marker) baiduMap.addOverlay(markerOptions);
         //添加文字
         OverlayOptions textOption = new TextOptions().bgColor(0x00000000)
-                .fontSize(50).fontColor(0xFFFF0000).text("暨南大学珠海校区").rotate(0).position(cenpt);
+                .fontSize(50).fontColor(0xFF0000FF).text("暨南大学珠海校区").rotate(0).position(cenpt);
         baiduMap.addOverlay(textOption);
 
 
@@ -82,11 +86,47 @@ public class MapFragment extends Fragment {
             return false;
         }
     });
+    downloadAndDrawShops(baiduMap);
 
-
-
-        return view;
+    return view;
     }
+
+    private void downloadAndDrawShops(final BaiduMap baiduMap) {
+        final ShopLoader shopLoader=new ShopLoader();
+        final Handler handler=new Handler()
+        {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                for(int i=0;i<shopLoader.getShops().size();++i)
+                {
+                    Shop shop=shopLoader.getShops().get(i);
+                    LatLng point = new LatLng(shop.getLatitude(), shop.getLongitude());
+
+                    BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_action_name);
+                    MarkerOptions markerOption = new MarkerOptions().icon(bitmap).position(point);
+                    Marker marker = (Marker) baiduMap.addOverlay(markerOption);
+                    marker.setTitle(shop.getName());
+                    //添加文字
+                    OverlayOptions textOption = new TextOptions().bgColor(0x00000000).fontSize(50)
+                            .fontColor(0xFF0000FF).text(shop.getName()).rotate(0).position(point);
+                    baiduMap.addOverlay(textOption);
+                }
+
+            }
+        };
+        Runnable run=new Runnable() {
+            @Override
+            public void run() {
+                String data=shopLoader.download("http://file.nidama.net/class/mobile_develop/data/bookstore.json");
+                shopLoader.parseJson(data);
+                handler.sendEmptyMessage(1);
+            }
+        };
+        new Thread(run).start();
+    }
+
+
     private MapView mMapView = null;
     @Override
     public void onResume() {
