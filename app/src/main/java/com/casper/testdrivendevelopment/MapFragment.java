@@ -45,8 +45,6 @@ public class MapFragment extends Fragment {
         mMapView = (MapView) view.findViewById(R.id.MapView);
 
         BaiduMap baiduMap=mMapView.getMap();
-
-
         //设定中心点坐标
         LatLng cenpt =  new LatLng(22.255925,113.541112);
         //定义地图状态
@@ -71,18 +69,13 @@ public class MapFragment extends Fragment {
         //准备 marker option 添加 marker 使用
         MarkerOptions markerOptions = new MarkerOptions().icon(bitmap).position(latLng);
 
-        Marker marker = (Marker) baiduMap.addOverlay(markerOptions);
-        //添加文字
-        OverlayOptions textOption = new TextOptions().bgColor(0x00000000)
-                .fontSize(50).fontColor(0xFF0000FF).text("暨南大学珠海校区").rotate(0).position(cenpt);
-        baiduMap.addOverlay(textOption);
-
+        final Marker marker = (Marker) baiduMap.addOverlay(markerOptions);
 
         //响应事件
         baiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
         @Override
-        public boolean onMarkerClick(Marker arg0) {
-            Toast.makeText(getContext(), "你点击了暨南大学！！", Toast.LENGTH_SHORT).show();
+        public boolean onMarkerClick(Marker marker) {
+            Toast.makeText(getContext(), "你点击了"+marker.getTitle()+"!", Toast.LENGTH_SHORT).show();
             return false;
         }
     });
