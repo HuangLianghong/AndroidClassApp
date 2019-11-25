@@ -5,10 +5,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import java.util.ArrayList;
 
@@ -17,8 +17,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     DrawThread drawThread;
     ArrayList<Sprite> sprites=new ArrayList<Sprite>();
 
-    float xTouch=-1,yTouch=-1;
+
+    float xTouch=200,yTouch=300;
     int count = 0;
+
+    boolean re = false;
+
     public GameView(Context context) {
         super(context);
         holder=this.getHolder();
@@ -29,17 +33,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         sprites.add(new Sprite());
         sprites.add(new Sprite());
         sprites.add(new Sprite());
+        sprites.add(new Sprite());
+        sprites.add(new Sprite());
+        sprites.add(new Sprite());
+        sprites.add(new Sprite());
+        sprites.add(new Sprite());
 
 
-        this.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                xTouch=event.getX();
-                yTouch=event.getY();
-                return false;
-            }
-        });
+
+
+
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //实时获取手指停留处的xy坐标
+        xTouch = (float) event.getX();
+        yTouch = (float) event.getY();
+        return true;
+    }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -66,86 +80,116 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         public void stopThread() {
             beAlive=false;
         }
+
         @Override
         public void run() {
             while(beAlive) {
-                xTouch=-1;
-                yTouch=-1;
 
                 try{
                     //获得绘画的画布
                     Canvas canvas =  holder.lockCanvas();
-                    //背景设成蓝色
+                    //背景设成白色
                     canvas.drawColor(Color.WHITE);
+
 
                     //在20，40的地方画一个文本hello world!
                     Paint p = new Paint();
                     p.setTextSize(50);
-                    p.setColor(Color.BLACK);
-                    canvas.drawText("击中了"+count +"个",20,60,p);
-                    if(xTouch>0) {
-                        for(Sprite sprite:sprites){
-                            if(xTouch<sprite.getX()+30 && xTouch>sprite.getX()-30){
-                                if(yTouch<sprite.getY()+30&&yTouch>sprite.getY()-30){
-                                    ++count;
-                                    sprite.reset();
 
-                                }
+                    Paint user = new Paint();
+                    user.setColor(Color.GREEN);
+
+                    p.setColor(Color.BLACK);
+                    canvas.drawText("碰撞了"+count +"次",20,60,p);
+
+
+                    canvas.drawCircle(xTouch,yTouch,30,user);
+                    if(xTouch>0) {
+                        for(Sprite sprite:sprites) {
+                            if(isCollsionWithCircle(xTouch,yTouch,30,sprite.getX(),sprite.getY(),30)){
+                                user.setColor(Color.RED);
+                                canvas.drawCircle(xTouch,yTouch,30,user);
+                                ++count;
+
                             }
+
                         }
 
                     }
-                    else
+
 
                     for (Sprite sprite:sprites) {
                         sprite.move();
+
                     }
 
+                    p.setColor(Color.BLACK);
                     for (Sprite sprite:sprites) {
                         canvas.drawCircle(sprite.getX(),sprite.getY(),30,p);
                     }
 
+
+
                     holder.unlockCanvasAndPost(canvas);//解锁
-                    Thread.sleep(10);
+                    Thread.sleep(15);
                 }catch (Exception e){
                 }
             }
         }
+
     }
 
-    private class Sprite {
-        int x,y;
-        double directionAgle;
+
+    public boolean isCollsionWithCircle(float x1,float y1,int r1,float x2,float y2,int r2){
+        float SquareX = (x1-x2)*(x1-x2);
+        float SquareY = (y1-y2)*(y1-y2);
+
+        if(SquareX < r1*r1 ||SquareX < r2*r2){
+            if(SquareY < r1*r1 || SquareY < r2*r2){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public class Sprite {
+        float x,y;
+        double directionAngle;
 
         public Sprite() {
-            x= (int) (GameView.this.getWidth()*Math.random());
-            y= (int) (GameView.this.getHeight()*Math.random());
-            directionAgle=Math.random()*2*Math.PI;
+            x= (float) (GameView.this.getWidth()*Math.random());
+            y= (float) (GameView.this.getHeight()*Math.random());
+            directionAngle =Math.random()*2*Math.PI;
         }
 
-        public int getX() {
+        public float getX() {
             return x;
         }
 
-        public int getY() {
+        public float getY() {
             return y;
+        }
+
+        public void setX(float x) {
+            this.x = x;
+        }
+
+        public void setY(float y) {
+            this.y = y;
         }
 
         public void move()
         {
-            x+=15*Math.cos(directionAgle);
-            y+=15*Math.sin(directionAgle);
+            x+=20*Math.cos(directionAngle);
+            y+=20*Math.sin(directionAngle);
             if(x<0) x+=GameView.this.getWidth();
             if(x>GameView.this.getWidth())x-=GameView.this.getWidth();
             if(y<0) y+=GameView.this.getHeight();
             if(y>GameView.this.getHeight())y-=GameView.this.getHeight();
 
-            if(Math.random()<0.05)directionAgle=Math.random()*2*Math.PI;
+            if(Math.random()<0.05) directionAngle =Math.random()*2*Math.PI;
         }
-        public void reset(){
-            x=(int)Math.random()%GameView.this.getWidth();
-            y = (int)Math.random()%GameView.this.getHeight();
-        }
+
 
     }
 }
