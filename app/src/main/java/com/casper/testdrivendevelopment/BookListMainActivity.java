@@ -58,12 +58,14 @@ public class BookListMainActivity extends AppCompatActivity {
         datas.add(new BookListFragment(theAdapter));
         datas.add(new WebFragment());
         datas.add(new MapFragment());
+        datas.add(new GameFragment());
         myPageAdapter.setData(datas);
 
         ArrayList<String> titles = new ArrayList<String>();
         titles.add("商品");
         titles.add("新闻");
         titles.add("商家");
+        titles.add("游戏");
         myPageAdapter.setTitles(titles);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
@@ -126,7 +128,7 @@ public class BookListMainActivity extends AppCompatActivity {
                     //good.setPrice(price);
                     theAdapter.notifyDataSetChanged();
 
-                    Toast.makeText(this, "Update successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Update successfully", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

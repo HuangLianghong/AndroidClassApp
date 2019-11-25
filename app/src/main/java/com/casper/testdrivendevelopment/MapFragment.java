@@ -62,15 +62,6 @@ public class MapFragment extends Fragment {
         baiduMap.setMapStatus(mMapStatusUpdate);
 
 
-
-        LatLng latLng = baiduMap.getMapStatus().target;
-        //准备 marker 的图片
-        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.ic_action_name);
-        //准备 marker option 添加 marker 使用
-        MarkerOptions markerOptions = new MarkerOptions().icon(bitmap).position(latLng);
-
-        final Marker marker = (Marker) baiduMap.addOverlay(markerOptions);
-
         //响应事件
         baiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
         @Override
@@ -84,13 +75,16 @@ public class MapFragment extends Fragment {
     return view;
     }
 
+
     private void downloadAndDrawShops(final BaiduMap baiduMap) {
         final ShopLoader shopLoader=new ShopLoader();
         final Handler handler=new Handler()
         {
+            //重写从子线程接收并处理消息的方法
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+
                 for(int i=0;i<shopLoader.getShops().size();++i)
                 {
                     Shop shop=shopLoader.getShops().get(i);
@@ -108,6 +102,7 @@ public class MapFragment extends Fragment {
 
             }
         };
+        //子进程内容
         Runnable run=new Runnable() {
             @Override
             public void run() {
@@ -116,6 +111,7 @@ public class MapFragment extends Fragment {
                 handler.sendEmptyMessage(1);
             }
         };
+        //开启一个子进程
         new Thread(run).start();
     }
 
